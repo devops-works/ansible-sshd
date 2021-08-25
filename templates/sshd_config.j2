@@ -14,9 +14,6 @@ Port {{ ssh_port }}
 #ListenAddress ::
 #ListenAddress 0.0.0.0
 
-# Necessary so X11 still works without IPv6
-AddressFamily inet
-
 Protocol 2
 # HostKeys for protocol version 2
 HostKey /etc/ssh/ssh_host_rsa_key
