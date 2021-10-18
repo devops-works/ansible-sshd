@@ -112,6 +112,7 @@ Match User {{ user.name }}
 {% endif %}
 
 {% if ssh_sftp_chroot is defined %}
+AllowGroup {{ ssh_sftp_chroot.group }}
 Match Group {{ ssh_sftp_chroot.group }}
    ChrootDirectory %h
    ForceCommand internal-sftp
