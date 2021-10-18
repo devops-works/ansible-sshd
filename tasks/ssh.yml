@@ -39,4 +39,5 @@
 - name: Creates sftp group if needed
   group:
     name: "{{ ssh_sftp_chroot.group }}"
+    gid: "{{ ssh_sftp_chroot.gid | default(omit) }}"
   when: ssh_sftp_chroot is defined and 'group' in ssh_sftp_chroot
