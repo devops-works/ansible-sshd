@@ -21,14 +21,6 @@ HostKey /etc/ssh/ssh_host_dsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 
-
-#Privilege Separation is turned on for security
-UsePrivilegeSeparation yes
-
-# Lifetime and size of ephemeral version 1 server key
-KeyRegenerationInterval 3600
-ServerKeyBits 1024
-
 # Logging
 SyslogFacility AUTH
 LogLevel INFO
@@ -38,14 +30,11 @@ LoginGraceTime 120
 PermitRootLogin prohibit-password
 StrictModes yes
 
-RSAAuthentication yes
 PubkeyAuthentication yes
 #AuthorizedKeysFile	%h/.ssh/authorized_keys
 
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
-# For this to work you will also need host keys in /etc/ssh_known_hosts
-RhostsRSAAuthentication no
 # similar for protocol version 2
 HostbasedAuthentication no
 # Uncomment if you don't trust ~/.ssh/known_hosts for RhostsRSAAuthentication
@@ -114,9 +103,9 @@ Match User {{ user.name }}
 {% if ssh_sftp_chroot is defined %}
 Match Group {{ ssh_sftp_chroot.group }}
    ChrootDirectory %h
-   ForceCommand internal-sftp
-   AuthorizedKeysFile      /etc/ssh/authorized_keys/%u
-   PasswordAuthentication {{ ssh_sftp_chroot.password_authentication | default(false) }}
+   ForceCommand internal-sftp {{ ssh_sftp_chroot.command_options | default("") }}
+   AuthorizedKeysFile         /etc/ssh/authorized_keys/%u
+   PasswordAuthentication     {{ ssh_sftp_chroot.password_authentication | default(false) }}
    AllowTcpForwarding no
    PermitTunnel no
    X11Forwarding no
