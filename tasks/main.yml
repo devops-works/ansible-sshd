@@ -1,6 +1,15 @@
-- include_tasks: ssh_bootstrap.yml
-  tags: ["ssh"]
+---
+- include_tasks:
+    file: ssh_bootstrap.yml
+    apply:
+      tags: ["ssh"]
   when: ssh_bootstrap
+  tags:
+    - always
 
-- include_tasks: ssh.yml
-  tags: ["ssh"]
+- include_tasks:
+    file: ssh.yml
+    apply:
+      tags: ["ssh"]
+  tags:
+    - always
