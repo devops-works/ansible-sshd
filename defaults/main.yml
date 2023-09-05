@@ -27,7 +27,7 @@ ssh_x11_forwarding: "no"
 ssh_remote_users: []
 
 # Custom configs
-ssh_custom: []
+ssh_custom: {}
 
 # Sample custom config
 # ssh_custom:
