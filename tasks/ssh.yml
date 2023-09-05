@@ -41,3 +41,9 @@
     name: "{{ ssh_sftp_chroot.group }}"
     gid: "{{ ssh_sftp_chroot.gid | default(omit) }}"
   when: ssh_sftp_chroot is defined and 'group' in ssh_sftp_chroot
+
+- name: Creates rsyslog configuration if needed
+  group:
+    name: "{{ ssh_sftp_chroot.group }}"
+    gid: "{{ ssh_sftp_chroot.gid | default(omit) }}"
+  when: ssh_sftp_chroot is defined and 'rsyslog_file' in ssh_sftp_chroot

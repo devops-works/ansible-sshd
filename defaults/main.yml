@@ -26,3 +26,9 @@ ssh_x11_forwarding: "no"
 # - { name: foo, key: "ssh-dss A...", users: [ "localuser1", "localuser2" ]}
 ssh_remote_users: []
 
+# Custom configs
+sshd_custom: []
+
+# Sample custom config
+# sshd_custom:
+#   StreamLocalBindUnlink: yes
