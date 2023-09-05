@@ -105,6 +105,6 @@ Match Group {{ ssh_sftp_chroot.group }}
    X11Forwarding no
 {% endif %}
 
-{% for conf,val in sshd_custom.items() %}
+{% for conf,val in ssh_custom.items() %}
 {{ conf }} {{ val }}
 {% endfor %}

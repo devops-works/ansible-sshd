@@ -27,8 +27,8 @@ ssh_x11_forwarding: "no"
 ssh_remote_users: []
 
 # Custom configs
-sshd_custom: []
+ssh_custom: []
 
 # Sample custom config
-# sshd_custom:
+# ssh_custom:
 #   StreamLocalBindUnlink: yes
