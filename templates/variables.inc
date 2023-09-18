@@ -5,7 +5,7 @@
     {% for addr in hostvars[elt]['ansible_all_ipv4_addresses'] %}
       {%- set _ = ssh_allow_scopes.append(addr) -%}
     {% endfor %}
-  {% elif elt|ipaddr %}
+  {% elif elt|ansible.utils.ipaddr %}
   {# this is an IP #}
     {%- set _ = ssh_allow_scopes.append(elt) -%}
   {% else %}
