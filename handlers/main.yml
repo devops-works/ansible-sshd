@@ -1,2 +1,10 @@
+---
 - name: Restarts sshd
-  service: name=ssh state=restarted
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+
+- name: Restart ferm
+  ansible.builtin.service:
+    name: ferm
+    state: restarted

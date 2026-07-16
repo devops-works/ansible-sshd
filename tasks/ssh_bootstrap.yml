@@ -1,28 +1,29 @@
+---
 - name: Creates account ssh directory
   remote_user: "{{ ssh_bootstrap_user }}"
-  become: yes
-  ignore_errors: yes
-  file: 
+  become: true
+  ignore_errors: true
+  ansible.builtin.file:
     path: "~{{ item }}/.ssh"
     owner: "{{ item }}"
     group: "{{ item }}"
-    mode: 0740
+    mode: "0740"
     state: directory
-  with_items: "[ {{ ssh_allow_users }} ]"
+  loop: "{{ ssh_allow_users }}"
   when: ssh_bootstrap and ssh_bootstrap_user is defined
   tags: ["ssh:keys"]
 
 - name: Deploys authorized ssh keys for system users
-  remote_user: "{{ ssh.bootstrap_user }}"
-  become: yes
-  ignore_errors: yes
-  template: 
-    src: "../templates/authorized_keys2.j2" 
-    dest: "~{{ item }}/.ssh/authorized_keys2" 
+  remote_user: "{{ ssh_bootstrap_user }}"
+  become: true
+  ignore_errors: true
+  ansible.builtin.template:
+    src: "../templates/authorized_keys2.j2"
+    dest: "~{{ item }}/.ssh/authorized_keys2"
     owner: "{{ item }}"
     group: "{{ item }}"
-    mode: 0600
-    backup: yes
-  with_items: "[ {{ ssh_allow_users }} ]"
+    mode: "0600"
+    backup: true
+  loop: "{{ ssh_allow_users }}"
   when: ssh_bootstrap and ssh_bootstrap_user is defined
   tags: ["ssh:keys"]

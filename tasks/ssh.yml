@@ -1,5 +1,6 @@
+---
 - name: Install openssh-server
-  apt:
+  ansible.builtin.apt:
     name: openssh-server
     state: latest
   when: not ssh_bootstrap
@@ -7,43 +8,43 @@
     - Restarts sshd
 
 - name: Deploys sshd config
-  template:
+  ansible.builtin.template:
     src: "../templates/sshd_config.j2"
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
-    mode: 0644
-    backup: yes
+    mode: "0644"
+    backup: true
   when: not ssh_bootstrap
   notify:
     - Restarts sshd
 
 - name: Deploys authorized ssh keys for users
-  authorized_key:
-    user: "{{ item.user | default('root')}}"
-    key: "{{ item.key}}"
+  ansible.posix.authorized_key:
+    user: "{{ item.user | default('root') }}"
+    key: "{{ item.key }}"
     path: "{{ item.keyfile | default(omit) }}"
     state: present
-  with_items:
-    - "{{ ssh_keys }}"
+  loop: "{{ ssh_keys }}"
   tags: ["ssh:keys"]
 
 - name: Adds ferm filtering
-  template:
+  ansible.builtin.template:
     src: "../templates/ferm.j2"
     dest: /etc/ferm/filter-input.d/60_ssh.conf
+    mode: "0644"
   when: ferm_enabled
   tags: ["ferm"]
   notify: Restart ferm
 
 - name: Creates sftp group if needed
-  group:
+  ansible.builtin.group:
     name: "{{ ssh_sftp_chroot.group }}"
     gid: "{{ ssh_sftp_chroot.gid | default(omit) }}"
   when: ssh_sftp_chroot is defined and 'group' in ssh_sftp_chroot
 
 - name: Creates rsyslog configuration if needed
-  group:
+  ansible.builtin.group:
     name: "{{ ssh_sftp_chroot.group }}"
     gid: "{{ ssh_sftp_chroot.gid | default(omit) }}"
   when: ssh_sftp_chroot is defined and 'rsyslog_file' in ssh_sftp_chroot

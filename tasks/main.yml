@@ -1,5 +1,6 @@
 ---
-- include_tasks:
+- name: Bootstrap ssh access
+  ansible.builtin.include_tasks:
     file: ssh_bootstrap.yml
     apply:
       tags: ["ssh"]
@@ -7,7 +8,8 @@
   tags:
     - always
 
-- include_tasks:
+- name: Configure ssh
+  ansible.builtin.include_tasks:
     file: ssh.yml
     apply:
       tags: ["ssh"]
