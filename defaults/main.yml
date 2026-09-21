@@ -26,7 +26,30 @@ ssh_x11_forwarding: "no"
 # - { name: foo, key: "ssh-dss A...", users: [ "localuser1", "localuser2" ]}
 ssh_remote_users: []
 
+# Time allowed to complete authentication, in seconds (OpenSSH default: 120).
+# A lower value frees unauthenticated connection slots faster.
+ssh_login_grace_time: 30
+
+# Concurrent unauthenticated connections, as start:drop%:full.
+# Above "start", sshd drops "drop%" of new connections, rising to 100% at "full".
+ssh_max_startups: "10:30:100"
+
+# Same limit, per source address. Requires OpenSSH >= 8.5 (Debian 12); the role
+# leaves it out on older versions. Keep it below the first number of
+# ssh_max_startups so a single source cannot take every slot.
+ssh_per_source_max_startups: 5
+
+# Idle SFTP sessions (Match Group block of ssh_sftp_chroot): a session whose
+# client stops answering is closed after interval x count_max seconds.
+# Transfers keep the session alive, so only idle ones are closed.
+# Per-host override: ssh_sftp_chroot.client_alive_interval / .client_alive_count_max
+ssh_sftp_client_alive_interval: 30
+ssh_sftp_client_alive_count_max: 4
+
 # Custom configs
+# WARNING: these lines are written at the END of sshd_config, after the Match
+# blocks. They therefore apply only to the last Match block, and sshd refuses to
+# start if a directive is not allowed inside a Match.
 ssh_custom: {}
 
 # Sample custom config

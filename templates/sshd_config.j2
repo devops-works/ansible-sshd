@@ -20,7 +20,7 @@ SyslogFacility AUTH
 LogLevel INFO
 
 # Authentication:
-LoginGraceTime 120
+LoginGraceTime {{ ssh_login_grace_time }}
 PermitRootLogin prohibit-password
 StrictModes yes
 
@@ -66,7 +66,11 @@ PrintLastLog yes
 TCPKeepAlive yes
 #UseLogin no
 
-#MaxStartups 10:30:60
+# Unauthenticated connection slots. Must stay outside any Match block.
+MaxStartups {{ ssh_max_startups }}
+{% if ssh_per_source_max_startups and __ssh_openssh_version is defined and __ssh_openssh_version is version('8.5', '>=') %}
+PerSourceMaxStartups {{ ssh_per_source_max_startups }}
+{% endif %}
 #Banner /etc/issue.net
 
 # Allow client to pass locale environment variables
@@ -103,8 +107,12 @@ Match Group {{ ssh_sftp_chroot.group }}
    AllowTcpForwarding no
    PermitTunnel no
    X11Forwarding no
+   ClientAliveInterval        {{ ssh_sftp_chroot.client_alive_interval | default(ssh_sftp_client_alive_interval) }}
+   ClientAliveCountMax        {{ ssh_sftp_chroot.client_alive_count_max | default(ssh_sftp_client_alive_count_max) }}
 {% endif %}
 
+{# These lines land after the Match blocks above, so they apply to the last one #}
+{# only. Directives not allowed inside a Match will prevent sshd from starting. #}
 {% for conf,val in ssh_custom.items() %}
 {{ conf }} {{ val }}
 {% endfor %}
